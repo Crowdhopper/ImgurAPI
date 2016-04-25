@@ -1,6 +1,8 @@
 package com.crowdhopper.imgurapi.Models;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -20,17 +22,19 @@ public class Album implements Model {
 	private String link;
 	private boolean favorite;
 	private boolean nsfw;
-	private String section;
-	private int order;
-	private String deletehash;
+	private String section = null;
+	private int order = 0;
+	private String deletehash = null;
 	private int image_num;
 	private List<Image> images;
-	private boolean in_gallery;
-	private JSONObject data;
+	private boolean in_gallery = true;
+	protected JSONObject data;
 	
 	public Album(Basic<JSONObject> base) {
 		this.populate(base);
 	}
+	
+	protected Album(){}
 	
 	@Override
 	public void populate(Basic<JSONObject> base) {
@@ -50,19 +54,19 @@ public class Album implements Model {
 		link = data.getString("link");
 		favorite = data.getBoolean("favorite");
 		nsfw = data.getBoolean("nsfw");
-		section = data.getString("section");
-		order = data.getInt("order");
+		if(data.has("section"))
+			section = data.getString("section");
+		if(data.has("order"))
+			order = data.getInt("order");
 		if(data.has("deletehash"))
 			deletehash = data.getString("deletehash");
-		else
-			deletehash = null;
 		image_num = data.getInt("images_count");
-		in_gallery = data.getBoolean("in_gallery");
+		if(data.has("in_gallery"))
+			in_gallery = data.getBoolean("in_gallery");
 		images = new ArrayList<Image>();
-		String rawString = data.getString("images");
-		rawString = rawString.substring(0, rawString.length() - 1).substring(1);
-		for(String s: rawString.split(",")) 
-			images.add(new Image(new JSONObject(s)));
+		JSONArray rawData = new JSONArray(data.getString("images"));
+		for(int i = 0; i < rawData.length(); i++)
+			images.add(new Image(rawData.getJSONObject(i)));
 	} 
 
 	@Override

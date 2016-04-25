@@ -91,5 +91,6 @@ public class ImgurApi {
 	public String getName() {return username;}
 	public String getHeader() {return headerVal;}
 	
+	//Endpoints
 	
 }

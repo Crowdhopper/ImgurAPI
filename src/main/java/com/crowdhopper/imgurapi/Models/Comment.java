@@ -1,6 +1,8 @@
 package com.crowdhopper.imgurapi.Models;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -57,11 +59,31 @@ public class Comment implements Model {
 		vote = data.getString("vote");
 		if(vote.equals("null"))
 			vote = null;
+		children = new ArrayList<Comment>();
+		JSONArray rawData = new JSONArray(data.getString("children"));
+		for(int i = 0; i < rawData.length(); i++)
+			children.add(new Comment(rawData.getJSONObject(i)));
 	}
 
 	@Override
 	public String toJson() {
-		return null;
+		return data.toString();
 	}
+	
+	public int getId() {return id;}
+	public String getImageId() {return image_id;}
+	public String getContent() {return content;}
+	public String getAuthor() {return author;}
+	public int getAuthorId() {return author_id;}
+	public boolean onAlbum() {return on_album;}
+	public String getAlbumCover() {return album_cover;}
+	public int getUpCount() {return ups;}
+	public int getDownCount() {return downs;}
+	public double getPoints() {return points;}
+	public int getTime() {return datetime;}
+	public int getParentId() {return parent_id;}
+	public boolean isDeleted() {return deleted;}
+	public String getVote() {return vote;}
+	public List<Comment> getChildren() {return children;}
 
 }
