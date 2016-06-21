@@ -1,43 +1,72 @@
 package com.crowdhopper.imgurapi.Models;
 
 import org.json.JSONObject;
+import org.json.JSONException;
 
-public class Account implements Model {
+public class Account extends Model {
 	private int id;
-	private String url;
+	private String url; // The account username
 	private String bio;
 	private double rep;
 	private int created;
-	private int pro_expiration;
+	private int pro_expiration; // The time the account's pro_membership will
+								// run out, if they have it.
 	JSONObject data;
-	
-	public Account(Basic<JSONObject> base) {
-		this.populate(base);
+
+	public Account(JSONObject data) {
+		this.data = data;
+		populate();
 	}
 	
+	//Only to be used in conjunction with the factory method.
+	public Account() {}
+
 	@Override
-	public void populate(Basic<JSONObject> base) {
-		data = base.getData();
+	public void populate() {
 		id = data.getInt("id");
 		url = data.getString("url");
-		bio = data.getString("bio");
+		try {
+			bio = data.getString("bio");
+		} catch (JSONException e) {
+			bio = null;
+		}
 		rep = data.getDouble("reputation");
 		created = data.getInt("created");
-		if(data.getString("pro_expiration").equals("false"))
-			pro_expiration = 0;
-		else
-			pro_expiration = data.getInt("pro_expiration");
+		pro_expiration = data.optInt("pro_expiration");
 	}
-	
+
 	@Override
-	public String toJson() {
+	public void factory(JSONObject data) {
+		this.data = data;
+		populate();
+	}
+
+	@Override
+	public String toString() {
 		return data.toString();
 	}
-	
-	public int getId() {return id;}
-	public String getUrl() {return url;}
-	public String getBio() {return bio;}
-	public double getRep() {return rep;}
-	public int getCreated() {return created;}
-	public int getProExpire() {return pro_expiration;}
+
+	public int getId() {
+		return id;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public String getBio() {
+		return bio;
+	}
+
+	public double getRep() {
+		return rep;
+	}
+
+	public int getCreated() {
+		return created;
+	}
+
+	public int getProExpire() {
+		return pro_expiration;
+	}
 }

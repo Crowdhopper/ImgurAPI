@@ -11,37 +11,67 @@ public class GalleryAlbum extends Album implements Gallery {
 	private int topic_id;
 	private int comment_count;
 	private MemeMetadata meme = null;
-	
-	public GalleryAlbum(Basic<JSONObject> base) {
-		this.populate(base);
-	}
-	
+
 	public GalleryAlbum(JSONObject data) {
-		Basic<JSONObject> base = new Basic<JSONObject>();
-		base.setData(data);
-		this.populate(base);
+		super(data);
 	}
+	
+	//Only to be used in conjunction with the factory method.
+	public GalleryAlbum() {}
 
 	@Override
-	public void populate(Basic<JSONObject> base) {
-		super.populate(base);
+	public void populate() {
+		super.populate();
 		ups = data.getInt("ups");
 		downs = data.getInt("downs");
 		points = data.getInt("points");
-		score = data.getInt("score");
-		topic = data.getString("topic");
-		topic_id = data.getInt("topic_id");
-		comment_count = data.getInt("comment_count");
-		if(data.has("meme_metadata"))
+		score = data.optInt("score");
+		topic = data.optString("topic");
+		topic_id = data.optInt("topic_id");
+		comment_count = data.optInt("comment_count");
+		if (data.has("meme_metadata"))
 			meme = new MemeMetadata(data.getJSONObject("meme_metadata"));
 	}
 
-	public int getUpVotes() {return ups;}
-	public int getDownVotes() {return downs;}
-	public int getPoints() {return points;}
-	public int getScore() {return score;}
-	public String getTopic() {return topic;}
-	public int getTopicID() {return topic_id;}
-	public int getCommentCount() {return comment_count;}
-	public MemeMetadata getMemeMetadata() {return meme;}
+	@Override
+	public void factory(JSONObject data) {
+		super.factory(data);
+	}
+
+	public int getUpVotes() {
+		return ups;
+	}
+
+	public int getDownVotes() {
+		return downs;
+	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public String getTopic() {
+		return topic;
+	}
+
+	public int getTopicID() {
+		return topic_id;
+	}
+
+	public int getCommentCount() {
+		return comment_count;
+	}
+
+	public MemeMetadata getMemeMetadata() {
+		return meme;
+	}
+
+	@Override
+	public boolean isAlbum() {
+		return true;
+	}
 }
