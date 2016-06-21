@@ -1,6 +1,6 @@
 package com.crowdhopper.imgurapi.Models;
 
-
-public interface Gallery extends Model {
-	
+//Exists purely to allow GalleryImages and GalleryAlbums to be in the same list.
+public interface Gallery {
+	public abstract boolean isAlbum();
 }
