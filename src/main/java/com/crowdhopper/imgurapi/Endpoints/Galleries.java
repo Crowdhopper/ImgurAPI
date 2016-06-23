@@ -11,7 +11,13 @@ import org.json.JSONObject;
 
 import com.crowdhopper.imgurapi.ImgurApi;
 import com.crowdhopper.imgurapi.Exceptions.*;
-import com.crowdhopper.imgurapi.Models.*;
+import com.crowdhopper.imgurapi.Models.Comment;
+import com.crowdhopper.imgurapi.Models.Gallery;
+import com.crowdhopper.imgurapi.Models.GalleryAlbum;
+import com.crowdhopper.imgurapi.Models.GalleryImage;
+import com.crowdhopper.imgurapi.Models.Tag;
+import com.crowdhopper.imgurapi.Models.TagVote;
+import com.crowdhopper.imgurapi.Models.Vote;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;

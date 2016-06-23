@@ -60,6 +60,7 @@ public class Albums extends Endpoint {
 		 */
 		public static String createAlbum(Map<String, String> settings) throws RateLimitException, HTTPRequestException {
 			api.checkCredits();
+			api.checkPosts();
 			Map<String, Object> fields = new LinkedHashMap<String, Object>();
 			fields.putAll(settings);
 			HttpResponse<JsonNode> response = null;
@@ -89,6 +90,7 @@ public class Albums extends Endpoint {
 		 */
 		public static String updateAlbum(Map<String, String> settings, String album) throws RateLimitException, HTTPRequestException {
 			api.checkCredits();
+			api.checkPosts();
 			Map<String, Object> fields = new LinkedHashMap<String, Object>();
 			fields.putAll(settings);
 			HttpResponse<JsonNode> response = null;
