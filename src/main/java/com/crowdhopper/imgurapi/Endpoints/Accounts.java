@@ -49,9 +49,9 @@ public class Accounts extends Endpoint {
 					e.printStackTrace();
 				}
 			}
-			JSONObject data = response.getBody().getObject();
-			api.checkStatus(data);
-			return new Account(data.optJSONObject("data"));
+			JSONObject raw = response.getBody().getObject();
+			api.checkStatus(raw);
+			return new Account(raw.optJSONObject("data"));
 		}
 		
 		
@@ -157,7 +157,8 @@ public class Accounts extends Endpoint {
 		 */
 		public static void changeAccountSettings(Map<String, String> settings) throws RateLimitException, AuthorizationException, HTTPRequestException {
 			api.checkAuthorization();
-			api.checkCredits(10);
+			api.checkCredits();
+			api.checkPosts();
 			Map<String, Object> fields = new LinkedHashMap<String, Object>();
 			fields.putAll(settings);
 			HttpResponse<JsonNode> response = null;
@@ -213,8 +214,9 @@ public class Accounts extends Endpoint {
 		
 		//Sends a verification email to the logged in user.
 		public static void sendVerificationEmail() throws RateLimitException, AuthorizationException, HTTPRequestException {
-			api.checkCredits(10);
+			api.checkCredits();
 			api.checkAuthorization();
+			api.checkPosts();
 			HttpResponse<JsonNode> response = null;
 			try {
 				response = Unirest.post(ImgurApi.API_URL + "account/me/verifyemail")

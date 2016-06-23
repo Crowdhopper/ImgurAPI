@@ -52,9 +52,21 @@ public class ImgurApi {
 		this.ID = client_id;
 		this.secret = client_secret;
 		if(auth_type == null) {
+			auth = false;
 			header_val = String.format("Client-ID %s", ID);
+			HttpResponse<JsonNode> response = null;
+			try {
+				response = 
+						Unirest.post(AUTH_URL)
+						.asJson();
+			} catch (UnirestException e) {
+				e.printStackTrace();
+			}
+			initPost(response.getHeaders());
+			refreshEndpoints();
 			return;
 		}
+		auth = true;
 		if(auth_type.equals("token")) {
 			auth_type = "refresh_token";
 		}
@@ -66,9 +78,9 @@ public class ImgurApi {
 			fields.put("grant_type", "authorization_code");
 		else
 			fields.put("grant_type", auth_type);
-		HttpResponse<JsonNode> httpResponse = null;
+		HttpResponse<JsonNode> response = null;
 		try {
-			httpResponse = 
+			response = 
 					Unirest.post(AUTH_URL)
 					.fields(fields)
 					.asJson();
@@ -76,11 +88,11 @@ public class ImgurApi {
 			e.printStackTrace();
 		}
 		
-		JSONObject jsonResponse = httpResponse.getBody().getObject();
-		refresh_token = jsonResponse.getString("refresh_token");
-		header_val = String.format("Bearer %s", jsonResponse.getString("access_token"));
-		username = jsonResponse.getString("account_username");
-		initPost(httpResponse.getHeaders());
+		JSONObject raw = response.getBody().getObject();
+		refresh_token = raw.getString("refresh_token");
+		header_val = String.format("Bearer %s", raw.getString("access_token"));
+		username = raw.getString("account_username");
+		initPost(response.getHeaders());
 		refreshEndpoints();
 	}
 	
@@ -209,9 +221,9 @@ public class ImgurApi {
 	}
 	
 	//Checks the http status code
-	public void checkStatus(JSONObject response) throws HTTPRequestException {
-		if(!response.optBoolean("success"))
-			throw new HTTPRequestException(response.optInt("status"));
+	public void checkStatus(JSONObject raw) throws HTTPRequestException {
+		if(!raw.optBoolean("success"))
+			throw new HTTPRequestException(raw.optInt("status"));
 	}
 	
 	public void checkAuthorization() throws AuthorizationException {
