@@ -1,5 +1,6 @@
 package com.crowdhopper.imgurapi.Models;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Topic extends Model {
@@ -28,15 +29,19 @@ public class Topic extends Model {
 		id = data.getInt("id");
 		name = data.getString("name");
 		descript = data.getString("description");
-		css = data.getString("css");
+		css = data.optString("css");
 		ephemeral = data.getBoolean("ephemeral");
 		is_hero = data.getBoolean("isHero");
-		hero_image = new Image(data.getJSONObject("heroImage"));
-		JSONObject rawData = data.getJSONObject("topPost");
-		if (rawData.getBoolean("is_album"))
-			top_post = new GalleryAlbum(rawData);
+		try {
+			hero_image = new Image(data.getJSONObject("heroImage"));
+		} catch (JSONException e) {}
+		JSONObject raw_data = data.optJSONObject("topPost");
+		if(raw_data == null)
+			return;
+		if (raw_data.getBoolean("is_album"))
+			top_post = new GalleryAlbum(raw_data);
 		else
-			top_post = new GalleryImage(rawData);
+			top_post = new GalleryImage(raw_data);
 	}
 
 	@Override

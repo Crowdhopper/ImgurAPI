@@ -117,7 +117,7 @@ public class Images extends Endpoint {
 			try {
 				api.checkParameters(new String[] {"jpg",  "png", "jpeg", "gif"}, ext , "Path");
 			} catch (InvalidParameterException e) {
-				throw new InvalidParameterException("Path must point to a jpg, png, or gif.");
+				throw new InvalidParameterException("Path must point to a jpg, png, or gif.", e);
 			}
 			return uploadImageFromFile(file, title, album, description);
 		}

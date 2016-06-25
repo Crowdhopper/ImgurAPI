@@ -23,7 +23,6 @@ import com.crowdhopper.imgurapi.Models.*;
 import com.crowdhopper.imgurapi.Endpoints.*;
 import com.crowdhopper.imgurapi.Exceptions.*;
 
-//To Do- Actual documentation (pre-/post-conditions for methods, that kind of thing.)
 
 public class ImgurApi {
 	public static final String API_URL = "https://api.imgur.com/3/";
@@ -126,6 +125,7 @@ public class ImgurApi {
 		}
 		JSONObject response = refreshResponse.getBody().getObject();
 		header_val = String.format("Bearer %s", response.getString("access_token"));
+		System.out.println(response.getString("access_token"));
 	}
 	
 	public void refreshEndpoints() {

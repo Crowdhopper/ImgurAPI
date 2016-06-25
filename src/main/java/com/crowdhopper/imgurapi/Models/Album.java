@@ -61,7 +61,7 @@ public class Album extends Model {
 			layout = data.getString("layout");
 		views = data.getInt("views");
 		link = data.getString("link");
-		favorite = data.getBoolean("favorite");
+		favorite = data.optBoolean("favorite");
 		nsfw = data.optBoolean("nsfw");
 		if (data.has("section") && !data.isNull("section"))
 			section = data.getString("section");
