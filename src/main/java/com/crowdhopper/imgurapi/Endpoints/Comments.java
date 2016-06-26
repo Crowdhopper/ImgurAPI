@@ -119,7 +119,7 @@ public class Comments extends Endpoint {
 		
 		
 		//Vote on a comment. Vote must be either "up" or "down." Must be logged in.
-		public static void commentVote(int id, String vote) throws RateLimitException, HTTPRequestException, AuthorizationException, InvalidParameterException {
+		public static void commentVote(int id, String vote) throws RateLimitException, HTTPRequestException, AuthorizationException, IllegalArgumentException {
 			api.checkCredits();
 			api.checkPosts();
 			api.checkAuthorization();

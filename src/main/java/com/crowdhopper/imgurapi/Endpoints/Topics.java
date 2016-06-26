@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import com.crowdhopper.imgurapi.ImgurApi;
 import com.crowdhopper.imgurapi.Exceptions.RateLimitException;
 import com.crowdhopper.imgurapi.Exceptions.HTTPRequestException;
-import com.crowdhopper.imgurapi.Exceptions.InvalidParameterException;
 import com.crowdhopper.imgurapi.Models.Gallery;
 import com.crowdhopper.imgurapi.Models.Topic;
 
@@ -44,7 +43,7 @@ public class Topics extends Endpoint {
 	
 	//View gallery items for a topic.
 	public static List<Gallery> getItems(String topic_id, String sort, int page, String window)
-			throws InvalidParameterException, HTTPRequestException, RateLimitException {
+			throws IllegalArgumentException, HTTPRequestException, RateLimitException {
 		if(sort == null)
 			sort = "viral";
 		if(window == null)

@@ -28,7 +28,7 @@ public class CustomGalleries extends Endpoint {
 		 * Sort should be "top," "viral," or "time."
 		 * Window should be "day," "week," "month," "year," or "all."
 		 */
-		public static CustomGallery getCustomGallery(String sort, int page, String window) throws RateLimitException, AuthorizationException, HTTPRequestException, InvalidParameterException {
+		public static CustomGallery getCustomGallery(String sort, int page, String window) throws RateLimitException, AuthorizationException, HTTPRequestException, IllegalArgumentException {
 			if(sort == null)
 				sort = "viral";
 			if(window == null)
@@ -57,7 +57,7 @@ public class CustomGalleries extends Endpoint {
 		 * Sort should be "top," "viral," or "time."
 		 * Window should be "day," "week," "month," "year," or "all."
 		 */
-		public static CustomGallery getFilteredGallery(String sort, int page, String window) throws RateLimitException, AuthorizationException, HTTPRequestException, InvalidParameterException {
+		public static CustomGallery getFilteredGallery(String sort, int page, String window) throws RateLimitException, AuthorizationException, HTTPRequestException, IllegalArgumentException {
 			if(sort == null)
 				sort = "viral";
 			if(window == null)

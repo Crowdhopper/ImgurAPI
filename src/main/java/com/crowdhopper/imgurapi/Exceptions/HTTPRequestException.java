@@ -3,9 +3,11 @@ package com.crowdhopper.imgurapi.Exceptions;
 //Thrown when the status code from an HTTP Request was anything other than 200, indicating an error.
 public class HTTPRequestException extends Exception {
 	private static final long serialVersionUID = -6162953634325143247L;
+	private int status_code;
 
 	public HTTPRequestException(int status_code) {
 		super(status(status_code));
+		this.status_code = status_code;
 	}
 
 	public HTTPRequestException(String arg0) {
@@ -42,4 +44,6 @@ public class HTTPRequestException extends Exception {
 			return "Something went wrong.";
 		}
 	}
+	
+	public int getCode() {return status_code;}
 }

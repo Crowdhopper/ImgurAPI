@@ -33,7 +33,7 @@ public class Galleries extends Endpoint {
 	
 	//Retrieves the gallery.
 		public static List<Gallery> getGallery(String section, String sort, int page, String window, Boolean is_viral) 
-				throws InvalidParameterException, HTTPRequestException, RateLimitException {
+				throws IllegalArgumentException, HTTPRequestException, RateLimitException {
 			if(section == null)
 				section = "hot";
 			if(sort == null)
@@ -67,7 +67,7 @@ public class Galleries extends Endpoint {
 		
 		//Returns the meme subgallery.
 		public static List<Gallery> getMemeSubgallery(String sort, int page, String window) 
-				throws InvalidParameterException, RateLimitException, HTTPRequestException {
+				throws IllegalArgumentException, RateLimitException, HTTPRequestException {
 			if(sort == null)
 				sort = "viral";
 			if(window == null)
@@ -115,8 +115,8 @@ public class Galleries extends Endpoint {
 		
 		
 		//Returns a subreddit's subgallery, given the subreddit.
-		public static List<Gallery> getSubredditGallery(String subreddit, String sort, int page, String window) 
-				throws RateLimitException, HTTPRequestException, InvalidParameterException {
+		public static List<GalleryImage> getSubredditGallery(String subreddit, String sort, int page, String window) 
+				throws RateLimitException, HTTPRequestException, IllegalArgumentException {
 			if(sort == null)
 				sort = "time";
 			if(window == null)
@@ -138,7 +138,10 @@ public class Galleries extends Endpoint {
 			JSONObject raw = response.getBody().getObject();
 			api.checkStatus(raw);
 			JSONArray raw_list = raw.optJSONArray("data");
-			return api.dumpGallery(raw_list);
+			List<GalleryImage> image_list = new ArrayList<GalleryImage>();
+			for(int i = 0; i < raw_list.length(); i++)
+				image_list.add(new GalleryImage(raw_list.optJSONObject(i)));
+			return  image_list;
 		}
 		
 		
@@ -164,7 +167,7 @@ public class Galleries extends Endpoint {
 		
 		//Gets the information for the given tag.
 		public static Tag getTagged(String tag, String sort, int page, String window) 
-				throws HTTPRequestException, RateLimitException, InvalidParameterException {
+				throws HTTPRequestException, RateLimitException, IllegalArgumentException {
 			if(sort == null)
 				sort = "viral";
 			if(window == null)
@@ -229,7 +232,7 @@ public class Galleries extends Endpoint {
 		
 		//Votes on the given tag for the image.
 		public static void voteTag(String id, String tag, String vote) 
-				throws HTTPRequestException, RateLimitException, InvalidParameterException, AuthorizationException {
+				throws HTTPRequestException, RateLimitException, IllegalArgumentException, AuthorizationException {
 			api.checkCredits();
 			api.checkPosts();
 			api.checkAuthorization();
@@ -254,7 +257,7 @@ public class Galleries extends Endpoint {
 		//Searches the gallery using simple gallery search.
 		// Supports boolean operators AND, OR, and NOT; as well as the indices tag:, user:, title:, ext:, subreddit:, album:, meme:
 		public static List<Gallery> simpleSearch(String query, String sort, int page, String window) 
-				throws HTTPRequestException, RateLimitException, InvalidParameterException {
+				throws HTTPRequestException, RateLimitException, IllegalArgumentException {
 			if(sort == null)
 				sort = "time";
 			if(window == null)
@@ -293,7 +296,7 @@ public class Galleries extends Endpoint {
 		 * big (2,000 to 5,000 pixels square) | lrg (5,000 to 10,000 pixels square) | huge (10,000 square pixels and above)
 		 */
 		public static List<Gallery> advanceSearch(Map<String, Object> query, String sort, int page, String window) 
-				throws HTTPRequestException, RateLimitException, InvalidParameterException {
+				throws HTTPRequestException, RateLimitException, IllegalArgumentException {
 			if(sort == null)
 				sort = "time";
 			if(window == null)
@@ -341,12 +344,12 @@ public class Galleries extends Endpoint {
 		
 		//Share an album or image to the gallery.
 		public static void shareToGallery(String id, String title, String topic, boolean mature)
-				throws HTTPRequestException, RateLimitException, InvalidParameterException, AuthorizationException {
+				throws HTTPRequestException, RateLimitException, IllegalArgumentException, AuthorizationException {
 			api.checkCredits();
 			api.checkPosts();
 			api.checkAuthorization();
 			if(title == null)
-				throw new InvalidParameterException("Title cannot be null.");
+				throw new IllegalArgumentException("Title cannot be null.");
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("title", title);
 			if(topic != null)
@@ -425,6 +428,28 @@ public class Galleries extends Endpoint {
 		}
 		
 		
+		//Gives information about the given gallery object. Gives a generic object, use if you don't know whether it's an image or album.
+		public static Gallery getItem(String id)
+				throws HTTPRequestException, RateLimitException {
+			api.checkCredits();
+			HttpResponse<JsonNode> response = null;
+			try {
+				response = Unirest.get(ImgurApi.API_URL + "gallery/image/{id}")
+						.header("Authorization", api.getHeader())
+						.routeParam("id", id)
+						.asJson();
+			} catch (UnirestException e) {
+				e.printStackTrace();
+			}
+			JSONObject raw = response.getBody().getObject();
+			api.checkStatus(raw);
+			JSONObject data = raw.optJSONObject("data");
+			if(data.optBoolean("is_album"))
+				return new GalleryAlbum(data);
+			return new GalleryImage(data);
+		}
+		
+		
 		/*Report an item.
 		 * Possible values for reason are:
 		 * 0: No Reason
@@ -435,7 +460,7 @@ public class Galleries extends Endpoint {
 		 * 5: Pornography
 		 */
 		public static void reportItem(String id, int reason)
-				throws HTTPRequestException, RateLimitException, InvalidParameterException {
+				throws HTTPRequestException, RateLimitException, IllegalArgumentException {
 			api.checkCredits();
 			api.checkPosts();
 			api.checkParameters(new String[] {"0", "1", "2", "3", "4", "5"}, Integer.toString(reason) , "Reason");
@@ -476,7 +501,7 @@ public class Galleries extends Endpoint {
 		
 		//Vote on a post, vote should be "up" or "down"
 		public static void vote(String id, String vote)
-				throws HTTPRequestException, RateLimitException, InvalidParameterException {
+				throws HTTPRequestException, RateLimitException, IllegalArgumentException {
 			api.checkCredits();
 			api.checkPosts();
 			api.checkParameters(new String[] {"up", "down"}, vote, "Vote");

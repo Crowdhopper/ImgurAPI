@@ -107,17 +107,17 @@ public class Images extends Endpoint {
 		}
 		
 		public static String uploadImageFromFile(String path, String title, String album, String description)
-				throws HTTPRequestException, RateLimitException, InvalidParameterException {
+				throws HTTPRequestException, RateLimitException, IllegalArgumentException {
 			File file = new File(path);
 			if(!file.isFile())
-				throw new InvalidParameterException("Path must lead to a file.");
+				throw new IllegalArgumentException("Path must lead to a file.");
 			String name = file.getName();
 			String ext = name.split("\\.")[name.split("\\.").length - 1];
 			System.out.println(ext);
 			try {
 				api.checkParameters(new String[] {"jpg",  "png", "jpeg", "gif"}, ext , "Path");
-			} catch (InvalidParameterException e) {
-				throw new InvalidParameterException("Path must point to a jpg, png, or gif.", e);
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("Path must point to a jpg, png, or gif.", e);
 			}
 			return uploadImageFromFile(file, title, album, description);
 		}
@@ -144,21 +144,21 @@ public class Images extends Endpoint {
 		//Update image information. id should be the deletehash for anonymous images. Updated should be either "title" or "description,"
 		//depending on which is being updated.
 		public static void updateImage(String id, String updated, String updateTo)
-				throws HTTPRequestException, RateLimitException, InvalidParameterException {
+				throws HTTPRequestException, RateLimitException, IllegalArgumentException {
 			api.checkParameters(new String[] {"title", "description"}, updated , "Updated");
 			Map<String, Object> params = new HashMap<String, Object>();
 			updateImage(id, params);
 		}
 		
 		public static void updateImage(String id, Map<String, Object> params)
-				throws HTTPRequestException, RateLimitException, InvalidParameterException {
+				throws HTTPRequestException, RateLimitException, IllegalArgumentException {
 			api.checkCredits();
 			api.checkPosts();
 			for(String updated: params.keySet()) {
 				api.checkParameters(new String[] {"title", "description"}, updated , "Updated");
 			}
 			if(params.size() > 2)
-				throw new InvalidParameterException("No more than two entries should be given.");
+				throw new IllegalArgumentException("No more than two entries should be given.");
 			HttpResponse<JsonNode> response = null;
 			try {
 				response = Unirest.post(ImgurApi.API_URL + "image/{id}")

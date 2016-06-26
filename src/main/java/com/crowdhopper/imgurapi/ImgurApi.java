@@ -18,6 +18,7 @@ import java.util.List;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.lang.IllegalArgumentException;
 
 import com.crowdhopper.imgurapi.Models.*;
 import com.crowdhopper.imgurapi.Endpoints.*;
@@ -231,7 +232,7 @@ public class ImgurApi {
 			throw new AuthorizationException();
 	}
 	
-	public void checkParameters(String[] accepted, String param, String paramName) throws InvalidParameterException {
+	public void checkParameters(String[] accepted, String param, String paramName) throws IllegalArgumentException {
 		String message = String.format("%s must be ", paramName);
 		boolean acceptable = false;
 		for(int i = 0; i < accepted.length; i++) {
@@ -242,7 +243,7 @@ public class ImgurApi {
 		}
 		message += String.format("or \"%s.\"", accepted[accepted.length - 1]);
 		if(!acceptable)
-			throw new InvalidParameterException(message);
+			throw new IllegalArgumentException(message);
 	}
 	
 	@SuppressWarnings("unchecked")
