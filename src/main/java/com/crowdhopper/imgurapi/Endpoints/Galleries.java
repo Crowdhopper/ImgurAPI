@@ -428,28 +428,6 @@ public class Galleries extends Endpoint {
 		}
 		
 		
-		//Gives information about the given gallery object. Gives a generic object, use if you don't know whether it's an image or album.
-		public static Gallery getItem(String id)
-				throws HTTPRequestException, RateLimitException {
-			api.checkCredits();
-			HttpResponse<JsonNode> response = null;
-			try {
-				response = Unirest.get(ImgurApi.API_URL + "gallery/image/{id}")
-						.header("Authorization", api.getHeader())
-						.routeParam("id", id)
-						.asJson();
-			} catch (UnirestException e) {
-				e.printStackTrace();
-			}
-			JSONObject raw = response.getBody().getObject();
-			api.checkStatus(raw);
-			JSONObject data = raw.optJSONObject("data");
-			if(data.optBoolean("is_album"))
-				return new GalleryAlbum(data);
-			return new GalleryImage(data);
-		}
-		
-		
 		/*Report an item.
 		 * Possible values for reason are:
 		 * 0: No Reason
